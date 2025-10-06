@@ -2,31 +2,32 @@
 #include <string>
 #include <fstream>
 
-struct ScoreData {
+struct scoreData {
 	int            score = 0;
 	std::string    userName = {};
 };
 
 /**
- * @class DoublyLinkedList
+ * @class doublyLinkedList
  * @brief 指定したファイルを取り込める双方向リスト
  *
  * @note 入力と出力はstd::stringのみ
  * txtファイルを指定し、読み込むことで、
  * 再度同順に出力できます
  */
-class DoublyLinkedList {
+class doublyLinkedList {
 private:
 	struct Node {
 		Node* prevNode = nullptr;    //一つ前のノードのポインタ
 		Node* nextNode = nullptr;    //一つ後のノードのポインタ
-		ScoreData data = {};
+		scoreData data = {};
 	};
 
 	//ノードへのポインタ
 	Node* head = nullptr;  //先頭アドレス
-	Node* tail = nullptr;  //末尾アドレス
 	size_t listSize = 0;   //現在のリストのサイズ
+
+	Node* dummy = nullptr;
 
 	/**
      * @brief  引数のノードが存在するかを探索する
@@ -34,6 +35,8 @@ private:
 	 * @return 存在する場合はtrue、無い場合はfalseを返す
      */
 	bool containsNode(const Node* node) const {
+		if (node == dummy) return true;  //指定ノードがダミーノードである場合、一応存在しているので、trueを返す
+
 		for (Node* current = head; current != nullptr; current = current->nextNode) {
 			if (current == node) {
 				return true;
@@ -45,25 +48,94 @@ private:
 
 public:
 
-	class iterator {
-		//DoublyLinkedListからアクセスするための宣言
-		friend class DoublyLinkedList;
+	class constIterator {
+		//doublyLinkedListからアクセスするための宣言
+		friend class doublyLinkedList;
 
 	protected:
 		Node* node = nullptr;
 
 		//生成元
-		const DoublyLinkedList* host = nullptr;
+		const doublyLinkedList* host = nullptr;
 
 		//コンストラクタ(initの値で初期化)
-		explicit iterator(Node* init,const DoublyLinkedList* hostInit) : node(init), host(hostInit) {}
+		explicit constIterator(Node* init, const doublyLinkedList* hostInit) : node(init), host(hostInit) {}
+
+	public:
+	    /**
+	     * @brief  デフォルトコンストラクタ(iterator()呼出時、nodeをnullptrに)
+	     */
+		constIterator() = default;
+
+		/** 
+		 * @brief  前置デクリメント用(--it)(リストの先頭に向かって一つ進める[operator--]())
+		 * @return *this
+		 */
+		constIterator& operator--() { if (this->node) this->node = this->node->prevNode; return *this; }
+
+		/**
+		 * @brief  後置デクリメント用(it--)(リストの先頭に向かって一つ進める[operator--]())
+		 * @return 前に戻る以前のconstIterator
+		 */
+		constIterator  operator--(int) { constIterator it = *this; --(*this); return it; }
+
+		/**
+		 * @brief  前置インクリメント用(++it)(リストの末尾に向かって一つ進める[operator++]())
+		 * @return *this
+		 */
+		constIterator& operator++() { if (this->node) this->node = this->node->nextNode; return *this; }
+
+		/**
+		 * @brief  後置インクリメント用(it++)(リストの末尾に向かって一つ進める[operator++]())
+		 * @return 次に進む以前のconstIterator
+		 */
+		constIterator  operator++(int) { constIterator it = *this; ++(*this); return it; }
+
+		/**
+		 * @brief  間接参照(戻り値 const scoreData&)（イテレータの指す要素を取得する[operator* const版]())
+		 * @return const scoreData&
+		 */
+		const scoreData& operator*() const { return this->node->data; }
+
+		/**
+		 * @brief   コピーコンストラクタ自動生成(iteratorの位置ポインタを上書き)(代入を行う[operator=]())
+		 * @param   source 代入元
+		 * @return  *this
+		 */
+		constIterator& operator=(const constIterator& source) = default;
+		
+		/**
+		 * @brief   等値比較(==であればtrueを返す)(値と所有者が同一か比較する[operator==]())
+		 * @param   comp 比較相手
+		 * @return  等しい場合、true
+		 */
+		bool operator==(const constIterator& comp) const {
+			return this->host == comp.host && this->node == comp.node;
+		}
+
+		/**
+		 * @brief   非等値比較(!=であればtrueを返す)(異なるかか比較する[operator!=]()
+		 * @param   comp 比較相手
+		 * @return  等しくない場合、true
+		 */
+		bool operator!=(const constIterator& comp) const {
+			return !(*this == comp);
+		}
+	};
+
+	class iterator : public constIterator {
+		//doublyLinkedListからアクセスするための宣言
+		friend class doublyLinkedList;
+
+		//コンストラクタ(initの値で初期化)
+		explicit iterator(Node* init, const doublyLinkedList* hostInit) : constIterator(init, hostInit) {}
 
 	public:
 		//初期値はdefaultのnullptrにお任せ
 		iterator() = default;
 
-		//ScoreDataにアクセスするための間接参照
-		ScoreData& operator*() { return node->data; }
+		//scoreDataにアクセスするための間接参照
+		scoreData& operator*() { return node->data; }
 
 		//先頭でも末尾でもないイテレータ直接指定用
 		/**
@@ -77,7 +149,7 @@ public:
 		 * @param  dummy(int)
 		 * @return 前に戻る以前のiterator
 		 */
-		iterator  operator--(int dummy) { (void)dummy; const_iterator it = *this; --(*this); return it; }
+		iterator  operator--(int) { iterator it = *this; --(*this); return it; }
 
 		/**
 		 * @brief  前置インクリメント用(++it)(リストの末尾に向かって一つ進める[operator++]())
@@ -90,98 +162,76 @@ public:
 		 * @param  dummy(int)
 		 * @return 次に進む以前のiterator
 		 */
-		iterator  operator++(int dummy) { (void)dummy; const_iterator it = *this; ++(*this); return it; }
+		iterator  operator++(int) { iterator it = *this; ++(*this); return it; }
 
-	};
-
-	class const_iterator : public iterator {
-		//DoublyLinkedListからアクセスするための宣言
-		friend class DoublyLinkedList;
-
-		//コンストラクタ(initの値で初期化)
-		explicit const_iterator(Node* init, const DoublyLinkedList* hostInit) : iterator(init, hostInit) {}
-
-	public:
-	    /**
-	     * @brief  デフォルトコンストラクタ(iterator()呼出時、nodeをnullptrに)
-	     */
-		const_iterator() : iterator() {}
-
-		/** 
-		 * @brief  前置デクリメント用(--it)(リストの先頭に向かって一つ進める[operator--]())
-		 * @return *this
-		 */
-		const_iterator& operator--() { if (this->node) this->node = this->node->prevNode; return *this; }
-
-		/**
-		 * @brief  後置デクリメント用(it--)(リストの先頭に向かって一つ進める[operator--]())
-		 * @param  dummy(int)
-		 * @return 前に戻る以前のconst_iterator
-		 */
-		const_iterator  operator--(int dummy) { (void)dummy; const_iterator it = *this; --(*this); return it; }
-
-		/**
-		 * @brief  前置インクリメント用(++it)(リストの末尾に向かって一つ進める[operator++]())
-		 * @return *this
-		 */
-		const_iterator& operator++() { if (this->node) this->node = this->node->nextNode; return *this; }
-
-		/**
-		 * @brief  後置インクリメント用(it++)(リストの末尾に向かって一つ進める[operator++]())
-		 * @param  dummy(int)
-		 * @return 次に進む以前のconst_iterator
-		 */
-		const_iterator  operator++(int dummy) { (void)dummy; const_iterator it = *this; ++(*this); return it; }
-
-		/**
-		 * @brief  間接参照(戻り値 const ScoreData&)（イテレータの指す要素を取得する[operator* const版]())
-		 * @return const ScoreData&
-		 */
-		const ScoreData& operator*() const { return this->node->data; }
-
-		/**
-		 * @brief   コピーコンストラクタ自動生成(iteratorの位置ポインタをコピー)(コピーを行う[コピーコンストラクタ]())
-		 * @param   source 複製元
-		 */
-		const_iterator(const const_iterator& source) = default;
-
-		/**
-		 * @brief   コピーコンストラクタ自動生成(iteratorの位置ポインタを上書き)(代入を行う[operator=]())
-		 * @param   source 代入元
-		 * @return  *this
-		 */
-		const_iterator& operator=(const const_iterator& source) = default;
-		
 		/**
 		 * @brief   等値比較(==であればtrueを返す)(同一か比較する[operator==]())
 		 * @param   comp 比較相手
 		 * @return  等しい場合、true
 		 */
-		bool operator==(const const_iterator& comp) const { return this->node == comp.node; }
+		bool operator==(const iterator& comp) const {
+			return this->host == comp.host && this->node == comp.node;
+		}
 
 		/**
 		 * @brief   非等値比較(!=であればtrueを返す)(異なるかか比較する[operator!=]()
 		 * @param   comp 比較相手
 		 * @return  等しくない場合、true
 		 */
-		bool operator!=(const const_iterator& comp) const { return this->node != comp.node; }
-
-		/**
-		 * @brief   iteratorからconst_iteratorへ変換
-		 * @param   it 変換元
-		 */
-		const_iterator(const iterator& it) : iterator(it.node,it.host) {}
+		bool operator!=(const iterator& comp) const {
+			return !(*this == comp);
+		}
 	};
+
 
 public:
 	//データ数の取得
 	size_t size() const { return listSize; }
 
 	//先頭/末尾イテレータの取得
-	iterator       begin() { return iterator(head,this); }
-	const_iterator cbegin() const { return const_iterator(head, this); }
-	iterator       end() { return iterator(nullptr, this); }
-	const_iterator cend()   const { return const_iterator(nullptr, this); }
+	/**
+	* @brief   先頭イテレータの取得
+	* @return  listSizeが0の場合はdummyを返し、そうでない場合は先頭イテレータを返す
+	*/
+	iterator begin() {
+		if (listSize == 0) {
+			return iterator(dummy, this);
+		}
+		return iterator(head, this);
+	}
+
+	/**
+	* @brief   先頭コンストイテレータの取得
+	* @return  listSizeが0の場合はdummyを返し、そうでない場合は先頭コンストイテレータを返す
+	*/
+	constIterator cbegin() const {
+		if (listSize == 0) {
+			return constIterator(dummy, this);
+		}
+		return constIterator(head, this);
+	}
+
+	/**
+	* @brief   末尾イテレータの取得
+	* @return  listSizeが0の場合はdummyを返し、そうでない場合は末尾イテレータ(nullptr)を返す
+	*/
+	iterator end() {
+		if (listSize == 0) {
+			return iterator(dummy, this);
+		}
+		return iterator(nullptr, this);
+	}
+
+	/**
+	* @brief   末尾コンストイテレータの取得
+	* @return  listSizeが0の場合はdummyを返し、そうでない場合は末尾コンストイテレータ(nullptr)を返す
+	*/
+	constIterator cend() const {
+		if (listSize == 0) {
+			return constIterator(dummy, this);
+		}
+		return constIterator(nullptr, this);
+	}
 
 	/**
 	 * @brief          ノード追加
@@ -189,21 +239,28 @@ public:
 	 * @param datas    追加するデータstring
 	 * @return         追加したノードの位置
 	 */
-	iterator addNode(const const_iterator& nodePos, const ScoreData& datas) {
+	iterator addNode(const constIterator& nodePos, const scoreData& datas) {
 		//新規ノードにデータを代入
 		Node* current = new Node{ nullptr, nullptr, datas };
 
 		//もしリストが空であった場合
 		if (listSize == 0) {
 			//先頭と末尾アドレスにcurrentを代入
-			head = tail = current;
+			head = current;
 		}
 		//もしpreviousが末尾のノードだった場合		
 		else if (nodePos.node == nullptr) {
 			//currentを追加し、末尾アドレスにcurrentを代入
-			current->prevNode = tail;
+			Node* tail = head;
+
+			//末尾の要素を保持するアドレスまで辿り、
+			while (tail->nextNode) {
+				tail = tail->nextNode;
+			}
+
+			//nextNodeとprevNodeを繋ぎなおす
 			tail->nextNode = current;
-			tail = current;
+			current->prevNode = tail;
 		}
 		
 		//もし挿入先が先頭であった場合
@@ -256,9 +313,6 @@ public:
 		if (current->nextNode) {
 			current->nextNode->prevNode = current->prevNode;
 		}
-		else {
-			tail = current->prevNode;
-		}
 
 		//currentを削除し、リストサイズも減らす
 		delete current;
@@ -278,7 +332,6 @@ public:
 			current = next;
 		}
 		head = nullptr;
-		tail = nullptr;
 		listSize = 0;
 	}
 
@@ -312,7 +365,7 @@ public:
 
 			std::string inputScore = line.substr(0, tab);
 			std::string name = line.substr(tab + 1);
-			ScoreData data{};
+			scoreData data{};
 			//数字だった場合、inputScoreを数字に変換
 			try { 
 				data.score = std::stoi(inputScore);
@@ -358,24 +411,29 @@ public:
 	/**
 	 * @brief デフォルトコンストラクタ。
 	 */
-	DoublyLinkedList() = default;
+	doublyLinkedList() {
+		//ダミーノード作成
+		dummy = new Node();
+	}
 
 	/**
 	 * @brief デストラクタでリストの内容物全消去
 	 */
-	~DoublyLinkedList() {
+	~doublyLinkedList() {
 		clear(); 
+		delete dummy;
+		dummy = nullptr;
 	}
 
 	/**
 	 * @brief コピーコンストラクタを削除。
 	 */
-	DoublyLinkedList(const DoublyLinkedList&) = delete;
+	doublyLinkedList(const doublyLinkedList&) = delete;
 
 	/**
 	 * @brief コピー代入演算子を削除。
 	 */
-	DoublyLinkedList& operator=(const DoublyLinkedList&) = delete;
+	doublyLinkedList& operator=(const doublyLinkedList&) = delete;
 
 	/**
 	 * @brief  位置nodePosの直前に挿入(iterator)
@@ -383,7 +441,7 @@ public:
 	 * @param  data    入力データ
 	 * @return 成功であればtrue、不正イテレータ等の場合はfalseを返す
 	 */
-	bool insertData(const iterator& nodePos, const ScoreData& data) {
+	bool insertData(const iterator& nodePos, const scoreData& data) {
 		//イテレータの所有者が自分でない場合、falseを返す
 		if (nodePos.host != this) {
 			return false;
@@ -392,17 +450,17 @@ public:
 		if (nodePos.node != nullptr && !containsNode(nodePos.node)) {
 			return false;
 		}
-		addNode(const_iterator(nodePos.node,this), data);
+		addNode(constIterator(nodePos.node,this), data);
 		return true;
 	}
 
 	/**
-	 * @brief  位置nodePosの直前に挿入(const_iterator)
+	 * @brief  位置nodePosの直前に挿入(constIterator)
 	 * @param  nodePos ノード位置
 	 * @param   data   入力データ
 	 * @return 成功であればtrue、不正イテレータ等の場合はfalseを返す
 	 */
-	bool insertData(const const_iterator& nodePos, const ScoreData& data) {
+	bool insertData(const constIterator& nodePos, const scoreData& data) {
 		//イテレータの所有者が自分でない場合、falseを返す
 		if (nodePos.host != this) {
 			return false;
@@ -424,20 +482,22 @@ public:
 		if (listSize == 0)           return false;
 		if (nodePos.node == nullptr)     return false;
 		if (nodePos.host != this)           return false;
+		if (nodePos.node == dummy)       return false;
 		if (!containsNode(nodePos.node)) return false;
 		deleteNode(nodePos);
 		return true;
 	}
 
 	/**
-	 * @brief  位置nodePosにある要素を削除(const_iterator)
+	 * @brief  位置nodePosにある要素を削除(constIterator)
 	 * @param  nodePos ノード位置
 	 * @return 成功であればtrue、失敗の場合はfalseを返す
 	 */
-	bool deleteData(const const_iterator& nodePos) {
+	bool deleteData(const constIterator& nodePos) {
 		if (listSize == 0)               return false;
 		if (nodePos.host != this)           return false;
 		if (nodePos.node == nullptr)         return false;
+		if (nodePos.node == dummy)       return false;
 		if (!containsNode(nodePos.node))     return false;
 
 		return deleteData(iterator(nodePos.node, this));
