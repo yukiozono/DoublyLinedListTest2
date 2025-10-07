@@ -1,6 +1,7 @@
 #pragma once
 #include <string>
 #include <fstream>
+#include <cassert>
 
 struct scoreData {
 	int            score = 0;
@@ -21,10 +22,10 @@ private:
 		Node* prevNode = nullptr;    //一つ前のノードのポインタ
 		Node* nextNode = nullptr;    //一つ後のノードのポインタ
 		scoreData data = {};
+		bool isDummy = false;        //ダミーノードであるか
 	};
 
 	//ノードへのポインタ
-	Node* head = nullptr;  //先頭アドレス
 	size_t listSize = 0;   //現在のリストのサイズ
 
 	Node* dummy = nullptr;
@@ -37,7 +38,7 @@ private:
 	bool containsNode(const Node* node) const {
 		if (node == dummy) return true;  //指定ノードがダミーノードである場合、一応存在しているので、trueを返す
 
-		for (Node* current = head; current != nullptr; current = current->nextNode) {
+		for (Node* current = dummy->nextNode; current != dummy; current = current->nextNode) {
 			if (current == node) {
 				return true;
 			}
@@ -71,7 +72,20 @@ public:
 		 * @brief  前置デクリメント用(--it)(リストの先頭に向かって一つ進める[operator--]())
 		 * @return *this
 		 */
-		constIterator& operator--() { if (this->node) this->node = this->node->prevNode; return *this; }
+		constIterator& operator--() { 
+			//もしend()などから末尾(ダミーノード)を指定してデクリメントした場合、
+			if (node->isDummy) {
+				//もしダミーのprevNodeが自身を指していた場合、リストは空なので、assert発生
+				assert(node->prevNode != node);
+			}
+			//実際に中身があるノードだった場合
+			else {
+				//prevNodeがダミーだった場合、先頭を通り越しているので、assert発生
+				assert(!node->prevNode->isDummy);
+			}
+			node = node->prevNode;
+			return *this;;
+		}
 
 		/**
 		 * @brief  後置デクリメント用(it--)(リストの先頭に向かって一つ進める[operator--]())
@@ -83,7 +97,12 @@ public:
 		 * @brief  前置インクリメント用(++it)(リストの末尾に向かって一つ進める[operator++]())
 		 * @return *this
 		 */
-		constIterator& operator++() { if (this->node) this->node = this->node->nextNode; return *this; }
+		constIterator& operator++() {
+			//nullptrではない場合と、ダミーノードではない場合のみ通す
+			assert(node != nullptr && !node->isDummy);
+			node = node->nextNode; 
+			return *this; 
+		}
 
 		/**
 		 * @brief  後置インクリメント用(it++)(リストの末尾に向かって一つ進める[operator++]())
@@ -95,7 +114,11 @@ public:
 		 * @brief  間接参照(戻り値 const scoreData&)（イテレータの指す要素を取得する[operator* const版]())
 		 * @return const scoreData&
 		 */
-		const scoreData& operator*() const { return this->node->data; }
+		const scoreData& operator*() const { 
+			//nullptrではない場合と、ダミーノードではない場合のみ通す
+			assert(node != nullptr && !node->isDummy);
+			return node->data; 
+		}
 
 		/**
 		 * @brief   コピーコンストラクタ自動生成(iteratorの位置ポインタを上書き)(代入を行う[operator=]())
@@ -110,7 +133,7 @@ public:
 		 * @return  等しい場合、true
 		 */
 		bool operator==(const constIterator& comp) const {
-			return this->host == comp.host && this->node == comp.node;
+			return host == comp.host && node == comp.node;
 		}
 
 		/**
@@ -135,14 +158,32 @@ public:
 		iterator() = default;
 
 		//scoreDataにアクセスするための間接参照
-		scoreData& operator*() { return node->data; }
+		scoreData& operator*() {
+
+			//nullptrではない場合と、ダミーノードではない場合のみ通す
+			assert(node != nullptr && !node->isDummy);
+			return node->data; 
+		}
 
 		//先頭でも末尾でもないイテレータ直接指定用
 		/**
 		 * @brief  前置デクリメント用(--it)(リストの先頭に向かって一つ進める[operator--]())
 		 * @return *this
 		 */
-		iterator& operator--() { if (this->node) this->node = this->node->prevNode; return *this; }
+		iterator& operator--() {
+			//もしend()などから末尾(ダミーノード)を指定してデクリメントした場合、
+			if (node->isDummy) {
+				//もしダミーのprevNodeが自身を指していた場合、リストは空なので、assert発生
+				assert(node->prevNode != node);
+			}
+			//実際に中身があるノードだった場合
+			else {
+				//prevNodeがダミーだった場合、先頭を通り越しているので、assert発生
+				assert(!node->prevNode->isDummy);
+			}
+			node = node->prevNode; 
+			return *this; 
+		}
 
 		/**
 		 * @brief  後置デクリメント用(it--)(リストの先頭に向かって一つ進める[operator--]())
@@ -155,7 +196,12 @@ public:
 		 * @brief  前置インクリメント用(++it)(リストの末尾に向かって一つ進める[operator++]())
 		 * @return *this
 		 */
-		iterator& operator++() { if (this->node) this->node = this->node->nextNode; return *this; }
+		iterator& operator++() {
+			//nullptrではない場合と、ダミーノードではない場合のみ通す
+			assert(node != nullptr && !node->isDummy);
+			node = node->nextNode; 
+			return *this; 
+		}
 
 		/**
 		 * @brief  後置インクリメント用(it++)(リストの末尾に向かって一つ進める[operator++]())
@@ -170,7 +216,7 @@ public:
 		 * @return  等しい場合、true
 		 */
 		bool operator==(const iterator& comp) const {
-			return this->host == comp.host && this->node == comp.node;
+			return host == comp.host && node == comp.node;
 		}
 
 		/**
@@ -191,46 +237,34 @@ public:
 	//先頭/末尾イテレータの取得
 	/**
 	* @brief   先頭イテレータの取得
-	* @return  listSizeが0の場合はdummyを返し、そうでない場合は先頭イテレータを返す
+	* @return  循環リストの為、常にダミーの次を渡す
 	*/
 	iterator begin() {
-		if (listSize == 0) {
-			return iterator(dummy, this);
-		}
-		return iterator(head, this);
+		return iterator(dummy->nextNode, this);
 	}
 
 	/**
 	* @brief   先頭コンストイテレータの取得
-	* @return  listSizeが0の場合はdummyを返し、そうでない場合は先頭コンストイテレータを返す
+	* @return  循環リストの為、常にダミーの次を渡す
 	*/
 	constIterator cbegin() const {
-		if (listSize == 0) {
-			return constIterator(dummy, this);
-		}
-		return constIterator(head, this);
+		return constIterator(dummy->nextNode, this);
 	}
 
 	/**
 	* @brief   末尾イテレータの取得
-	* @return  listSizeが0の場合はdummyを返し、そうでない場合は末尾イテレータ(nullptr)を返す
+	* @return  循環リストの為、常にダミーを渡す
 	*/
 	iterator end() {
-		if (listSize == 0) {
-			return iterator(dummy, this);
-		}
-		return iterator(nullptr, this);
+		return iterator(dummy, this);
 	}
 
 	/**
 	* @brief   末尾コンストイテレータの取得
-	* @return  listSizeが0の場合はdummyを返し、そうでない場合は末尾コンストイテレータ(nullptr)を返す
+	* @return  循環リストの為、常にダミーを渡す
 	*/
 	constIterator cend() const {
-		if (listSize == 0) {
-			return constIterator(dummy, this);
-		}
-		return constIterator(nullptr, this);
+		return constIterator(dummy, this);
 	}
 
 	/**
@@ -240,47 +274,29 @@ public:
 	 * @return         追加したノードの位置
 	 */
 	iterator addNode(const constIterator& nodePos, const scoreData& datas) {
-		//新規ノードにデータを代入
-		Node* current = new Node{ nullptr, nullptr, datas };
+		Node* next = {};
 
-		//もしリストが空であった場合
-		if (listSize == 0) {
-			//先頭と末尾アドレスにcurrentを代入
-			head = current;
+		//nodePosが空でない場合
+		if (nodePos.node != nullptr) {
+			//挿入先を代入
+			next = nodePos.node;
 		}
-		//もしpreviousが末尾のノードだった場合		
-		else if (nodePos.node == nullptr) {
-			//currentを追加し、末尾アドレスにcurrentを代入
-			Node* tail = head;
-
-			//末尾の要素を保持するアドレスまで辿り、
-			while (tail->nextNode) {
-				tail = tail->nextNode;
-			}
-
-			//nextNodeとprevNodeを繋ぎなおす
-			tail->nextNode = current;
-			current->prevNode = tail;
-		}
-		
-		//もし挿入先が先頭であった場合
-		else if (nodePos.node == head) {
-			//currentを先頭にし、headの位置を交代
-			current->nextNode = head;
-			head->prevNode = current;
-			head = current;
-		}
-		//もしどちらでもない途中からの挿入だった場合
+		//それ以外の場合はダミーを代入
 		else {
-			//previousのノードとcurrentの前後のアドレスを再編成
-			Node* prev = nodePos.node->prevNode;
-			current->prevNode = prev;
-			current->nextNode = nodePos.node;
-			prev->nextNode = current;
-
-			//次のノードの前要素アドレスにcurrentを代入
-			nodePos.node->prevNode = current;
+			next = dummy;
 		}
+
+		//新規ノードを生成し、接続を再編成
+		Node* current = new Node();
+		current->prevNode = next->prevNode;
+		current->nextNode = next;
+		next->prevNode->nextNode = current;
+		next->prevNode = current;
+
+		//データを代入し、ダミーではないと判別する
+		current->data = datas;
+		current->isDummy = false;
+
 
 		//リストサイズを管理する変数を+1
 		++listSize;
@@ -297,22 +313,14 @@ public:
 	iterator deleteNode(const iterator& nodePos) {
 		Node* current = nodePos.node;
 
-		//見つからなかった場合は、nullptrをreturn
-		if (!current) return iterator(nullptr,this);
+		//見つからなかった場合もしくはダミーだった場合は、削除不可なのでダミーをreturn
+		if (current == nullptr || current == dummy) return iterator(dummy,this);
 
 		Node* next = current->nextNode;
-
+		Node* prev = current->prevNode;
 		//ノードの前後のポインタを再編成
-		if (current->prevNode) {
-			current->prevNode->nextNode = current->nextNode;
-		}
-		else {
-			head = current->nextNode;
-		}
-
-		if (current->nextNode) {
-			current->nextNode->prevNode = current->prevNode;
-		}
+		prev->nextNode = next;
+		next->prevNode = prev;
 
 		//currentを削除し、リストサイズも減らす
 		delete current;
@@ -324,88 +332,16 @@ public:
 	 * @brief リスト内の要素先頭から全消去
 	 */
 	void clear() {
-		Node* current = head;
-		//currentがnullptrになるまでループし、ノードを削除
-		while (current != nullptr) {
+		Node* current = dummy->nextNode;
+		//currentがdummyになるまでループし、ノードを削除
+		while (current != dummy) {
 			Node* next = current->nextNode;
 			delete current;
 			current = next;
 		}
-		head = nullptr;
+		dummy->nextNode = dummy;
+		dummy->prevNode = dummy;
 		listSize = 0;
-	}
-
-	/**
-	 * @brief ファイル読み込み
-	 * @param ファイルパス
-	 */
-	void inputData(const std::string& filePath) {
-		//まずはリストの内容物クリア
-		clear();
-
-		//ファイルパスからファイルを開く
-		std::ifstream file(filePath.c_str());
-
-		//もし正しくファイルを開けなかった場合、return
-		if (!file.is_open()) {
-			return;
-		}
-
-		std::string line = {};
-
-		//一行ずつListに追加
-		while (std::getline(file, line)) {
-			if (line.empty()) continue;  //もし空だった場合、続行
-
-			//最初のタブキー入力の位置を検索
-			std::size_t tab = line.find('\t');
-
-			// tabがない場合、スキップ
-			if (tab == std::string::npos) continue;
-
-			std::string inputScore = line.substr(0, tab);
-			std::string name = line.substr(tab + 1);
-			scoreData data{};
-			//数字だった場合、inputScoreを数字に変換
-			try { 
-				data.score = std::stoi(inputScore);
-			}
-			// 数字ではない場合、スキップ
-			catch (...) { 
-				continue; 
-			}              
-			data.userName = name;
-
-			// 末尾にノードを追加
-			insertData(cend(), data);
-		}
-
-		//ファイルを閉じる
-		file.close();
-	}
-
-	/**
-	 * @brief 読み込んだ内容の出力
-	 * @return 文字列(string)
-	 */
-	std::string outputData() const{
-		std::string outputLine = {};
-		Node* current = head;
-
-		//currentがnullptrになるまでループ
-		while (current != nullptr) {
-			//文字列を追加し、改行
-			outputLine += std::to_string(current->data.score);  //スコアを文字列に変換し、
-			outputLine += '\t';   //タブを追加
-			outputLine += current->data.userName;  //名前を追加し
-			outputLine += '\n';   //改行
-
-			//次のノードへ
-			current = current->nextNode;
-		}
-
-		//文字列を返す
-		return outputLine;
 	}
 
 	/**
@@ -414,6 +350,11 @@ public:
 	doublyLinkedList() {
 		//ダミーノード作成
 		dummy = new Node();
+		dummy->isDummy = true; //ダミーノードであると判別
+
+		//循環リストにする
+		dummy->nextNode = dummy;
+		dummy->prevNode = dummy;
 	}
 
 	/**
@@ -479,9 +420,9 @@ public:
 	 * @return 成功であればtrue、そして空、host不一致、nodePos==endもしくは不正であればfalseを返す
 	 */
 	bool deleteData(const iterator& nodePos) {
-		if (listSize == 0)           return false;
+		if (listSize == 0)               return false;
 		if (nodePos.node == nullptr)     return false;
-		if (nodePos.host != this)           return false;
+		if (nodePos.host != this)        return false;
 		if (nodePos.node == dummy)       return false;
 		if (!containsNode(nodePos.node)) return false;
 		deleteNode(nodePos);
@@ -495,10 +436,10 @@ public:
 	 */
 	bool deleteData(const constIterator& nodePos) {
 		if (listSize == 0)               return false;
-		if (nodePos.host != this)           return false;
-		if (nodePos.node == nullptr)         return false;
+		if (nodePos.host != this)        return false;
+		if (nodePos.node == nullptr)     return false;
 		if (nodePos.node == dummy)       return false;
-		if (!containsNode(nodePos.node))     return false;
+		if (!containsNode(nodePos.node)) return false;
 
 		return deleteData(iterator(nodePos.node, this));
 	}
