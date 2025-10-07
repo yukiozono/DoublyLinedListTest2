@@ -1,4 +1,4 @@
-#include "../ListTest/DoublyLinkedList.h"
+#include "DoublyLinkedList.h"
 #include <fstream>
 #include <iostream>
 #include <string>

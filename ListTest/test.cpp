@@ -1,6 +1,5 @@
 #include "pch.h"
-#include "doublyLinkedList.h"
-#include <type_traits>
+#include "../ListReadingTxt/DoublyLinkedList.h"
 
 /**
 * @brief ID0_0     ƒŠƒXƒg‚ª‹ó‚Å‚ ‚éê‡‚Ì–ß‚è’l
