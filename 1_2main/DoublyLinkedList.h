@@ -25,10 +25,9 @@ private:
 		bool isDummy = false;        //ダミーノードであるか
 	};
 
-	//ノードへのポインタ
 	size_t listSize = 0;   //現在のリストのサイズ
 
-	Node* dummy = nullptr;
+	Node* dummy = nullptr; //ダミーノード
 
 	/**
      * @brief  引数のノードが存在するかを探索する
