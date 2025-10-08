@@ -10,33 +10,33 @@ struct scoreData {
 
 /**
  * @class doublyLinkedList
- * @brief w’è‚µ‚½ƒtƒ@ƒCƒ‹‚ğæ‚è‚ß‚é‘o•ûŒüƒŠƒXƒg
+ * @brief æŒ‡å®šã—ãŸãƒ•ã‚¡ã‚¤ãƒ«ã‚’å–ã‚Šè¾¼ã‚ã‚‹åŒæ–¹å‘ãƒªã‚¹ãƒˆ
  *
- * @note “ü—Í‚Æo—Í‚Ístd::string‚Ì‚İ
- * txtƒtƒ@ƒCƒ‹‚ğw’è‚µA“Ç‚İ‚Ş‚±‚Æ‚ÅA
- * Ä“x“¯‡‚Éo—Í‚Å‚«‚Ü‚·
+ * @note å…¥åŠ›ã¨å‡ºåŠ›ã¯std::stringã®ã¿
+ * txtãƒ•ã‚¡ã‚¤ãƒ«ã‚’æŒ‡å®šã—ã€èª­ã¿è¾¼ã‚€ã“ã¨ã§ã€
+ * å†åº¦åŒé †ã«å‡ºåŠ›ã§ãã¾ã™
  */
 class doublyLinkedList {
 private:
 	struct Node {
-		Node* prevNode = nullptr;    //ˆê‚Â‘O‚Ìƒm[ƒh‚Ìƒ|ƒCƒ“ƒ^
-		Node* nextNode = nullptr;    //ˆê‚ÂŒã‚Ìƒm[ƒh‚Ìƒ|ƒCƒ“ƒ^
+		Node* prevNode = nullptr;    //ä¸€ã¤å‰ã®ãƒãƒ¼ãƒ‰ã®ãƒã‚¤ãƒ³ã‚¿
+		Node* nextNode = nullptr;    //ä¸€ã¤å¾Œã®ãƒãƒ¼ãƒ‰ã®ãƒã‚¤ãƒ³ã‚¿
 		scoreData data = {};
-		bool isDummy = false;        //ƒ_ƒ~[ƒm[ƒh‚Å‚ ‚é‚©
+		bool isDummy = false;        //ãƒ€ãƒŸãƒ¼ãƒãƒ¼ãƒ‰ã§ã‚ã‚‹ã‹
 	};
 
-	//ƒm[ƒh‚Ö‚Ìƒ|ƒCƒ“ƒ^
-	size_t listSize = 0;   //Œ»İ‚ÌƒŠƒXƒg‚ÌƒTƒCƒY
+	//ãƒãƒ¼ãƒ‰ã¸ã®ãƒã‚¤ãƒ³ã‚¿
+	size_t listSize = 0;   //ç¾åœ¨ã®ãƒªã‚¹ãƒˆã®ã‚µã‚¤ã‚º
 
 	Node* dummy = nullptr;
 
 	/**
-     * @brief  ˆø”‚Ìƒm[ƒh‚ª‘¶İ‚·‚é‚©‚ğ’Tõ‚·‚é
-     * @param  node ‘ÎÛ‚Ìƒ|ƒCƒ“ƒ^
-	 * @return ‘¶İ‚·‚éê‡‚ÍtrueA–³‚¢ê‡‚Ífalse‚ğ•Ô‚·
+     * @brief  å¼•æ•°ã®ãƒãƒ¼ãƒ‰ãŒå­˜åœ¨ã™ã‚‹ã‹ã‚’æ¢ç´¢ã™ã‚‹
+     * @param  node å¯¾è±¡ã®ãƒã‚¤ãƒ³ã‚¿
+	 * @return å­˜åœ¨ã™ã‚‹å ´åˆã¯trueã€ç„¡ã„å ´åˆã¯falseã‚’è¿”ã™
      */
 	bool containsNode(const Node* node) const {
-		if (node == dummy) return true;  //w’èƒm[ƒh‚ªƒ_ƒ~[ƒm[ƒh‚Å‚ ‚éê‡Aˆê‰‘¶İ‚µ‚Ä‚¢‚é‚Ì‚ÅAtrue‚ğ•Ô‚·
+		if (node == dummy) return true;  //æŒ‡å®šãƒãƒ¼ãƒ‰ãŒãƒ€ãƒŸãƒ¼ãƒãƒ¼ãƒ‰ã§ã‚ã‚‹å ´åˆã€ä¸€å¿œå­˜åœ¨ã—ã¦ã„ã‚‹ã®ã§ã€trueã‚’è¿”ã™
 
 		for (Node* current = dummy->nextNode; current != dummy; current = current->nextNode) {
 			if (current == node) {
@@ -50,37 +50,37 @@ private:
 public:
 
 	class constIterator {
-		//doublyLinkedList‚©‚çƒAƒNƒZƒX‚·‚é‚½‚ß‚ÌéŒ¾
+		//doublyLinkedListã‹ã‚‰ã‚¢ã‚¯ã‚»ã‚¹ã™ã‚‹ãŸã‚ã®å®£è¨€
 		friend class doublyLinkedList;
 
 	protected:
 		Node* node = nullptr;
 
-		//¶¬Œ³
+		//ç”Ÿæˆå…ƒ
 		const doublyLinkedList* host = nullptr;
 
-		//ƒRƒ“ƒXƒgƒ‰ƒNƒ^(init‚Ì’l‚Å‰Šú‰»)
+		//ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿(initã®å€¤ã§åˆæœŸåŒ–)
 		explicit constIterator(Node* init, const doublyLinkedList* hostInit) : node(init), host(hostInit) {}
 
 	public:
 	    /**
-	     * @brief  ƒfƒtƒHƒ‹ƒgƒRƒ“ƒXƒgƒ‰ƒNƒ^(iterator()ŒÄoAnode‚ğnullptr‚É)
+	     * @brief  ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿(iterator()å‘¼å‡ºæ™‚ã€nodeã‚’nullptrã«)
 	     */
 		constIterator() = default;
 
 		/** 
-		 * @brief  ‘O’uƒfƒNƒŠƒƒ“ƒg—p(--it)(ƒŠƒXƒg‚Ìæ“ª‚ÉŒü‚©‚Á‚Äˆê‚Âi‚ß‚é[operator--]())
+		 * @brief  å‰ç½®ãƒ‡ã‚¯ãƒªãƒ¡ãƒ³ãƒˆç”¨(--it)(ãƒªã‚¹ãƒˆã®å…ˆé ­ã«å‘ã‹ã£ã¦ä¸€ã¤é€²ã‚ã‚‹[operator--]())
 		 * @return *this
 		 */
 		constIterator& operator--() { 
-			//‚à‚µend()‚È‚Ç‚©‚ç––”ö(ƒ_ƒ~[ƒm[ƒh)‚ğw’è‚µ‚ÄƒfƒNƒŠƒƒ“ƒg‚µ‚½ê‡A
+			//ã‚‚ã—end()ãªã©ã‹ã‚‰æœ«å°¾(ãƒ€ãƒŸãƒ¼ãƒãƒ¼ãƒ‰)ã‚’æŒ‡å®šã—ã¦ãƒ‡ã‚¯ãƒªãƒ¡ãƒ³ãƒˆã—ãŸå ´åˆã€
 			if (node->isDummy) {
-				//‚à‚µƒ_ƒ~[‚ÌprevNode‚ª©g‚ğw‚µ‚Ä‚¢‚½ê‡AƒŠƒXƒg‚Í‹ó‚È‚Ì‚ÅAassert”­¶
+				//ã‚‚ã—ãƒ€ãƒŸãƒ¼ã®prevNodeãŒè‡ªèº«ã‚’æŒ‡ã—ã¦ã„ãŸå ´åˆã€ãƒªã‚¹ãƒˆã¯ç©ºãªã®ã§ã€assertç™ºç”Ÿ
 				assert(node->prevNode != node);
 			}
-			//ÀÛ‚É’†g‚ª‚ ‚éƒm[ƒh‚¾‚Á‚½ê‡
+			//å®Ÿéš›ã«ä¸­èº«ãŒã‚ã‚‹ãƒãƒ¼ãƒ‰ã ã£ãŸå ´åˆ
 			else {
-				//prevNode‚ªƒ_ƒ~[‚¾‚Á‚½ê‡Aæ“ª‚ğ’Ê‚è‰z‚µ‚Ä‚¢‚é‚Ì‚ÅAassert”­¶
+				//prevNodeãŒãƒ€ãƒŸãƒ¼ã ã£ãŸå ´åˆã€å…ˆé ­ã‚’é€šã‚Šè¶Šã—ã¦ã„ã‚‹ã®ã§ã€assertç™ºç”Ÿ
 				assert(!node->prevNode->isDummy);
 			}
 			node = node->prevNode;
@@ -88,58 +88,58 @@ public:
 		}
 
 		/**
-		 * @brief  Œã’uƒfƒNƒŠƒƒ“ƒg—p(it--)(ƒŠƒXƒg‚Ìæ“ª‚ÉŒü‚©‚Á‚Äˆê‚Âi‚ß‚é[operator--]())
-		 * @return ‘O‚É–ß‚éˆÈ‘O‚ÌconstIterator
+		 * @brief  å¾Œç½®ãƒ‡ã‚¯ãƒªãƒ¡ãƒ³ãƒˆç”¨(it--)(ãƒªã‚¹ãƒˆã®å…ˆé ­ã«å‘ã‹ã£ã¦ä¸€ã¤é€²ã‚ã‚‹[operator--]())
+		 * @return å‰ã«æˆ»ã‚‹ä»¥å‰ã®constIterator
 		 */
 		constIterator  operator--(int) { constIterator it = *this; --(*this); return it; }
 
 		/**
-		 * @brief  ‘O’uƒCƒ“ƒNƒŠƒƒ“ƒg—p(++it)(ƒŠƒXƒg‚Ì––”ö‚ÉŒü‚©‚Á‚Äˆê‚Âi‚ß‚é[operator++]())
+		 * @brief  å‰ç½®ã‚¤ãƒ³ã‚¯ãƒªãƒ¡ãƒ³ãƒˆç”¨(++it)(ãƒªã‚¹ãƒˆã®æœ«å°¾ã«å‘ã‹ã£ã¦ä¸€ã¤é€²ã‚ã‚‹[operator++]())
 		 * @return *this
 		 */
 		constIterator& operator++() {
-			//nullptr‚Å‚Í‚È‚¢ê‡‚ÆAƒ_ƒ~[ƒm[ƒh‚Å‚Í‚È‚¢ê‡‚Ì‚İ’Ê‚·
+			//nullptrã§ã¯ãªã„å ´åˆã¨ã€ãƒ€ãƒŸãƒ¼ãƒãƒ¼ãƒ‰ã§ã¯ãªã„å ´åˆã®ã¿é€šã™
 			assert(node != nullptr && !node->isDummy);
 			node = node->nextNode; 
 			return *this; 
 		}
 
 		/**
-		 * @brief  Œã’uƒCƒ“ƒNƒŠƒƒ“ƒg—p(it++)(ƒŠƒXƒg‚Ì––”ö‚ÉŒü‚©‚Á‚Äˆê‚Âi‚ß‚é[operator++]())
-		 * @return Ÿ‚Éi‚ŞˆÈ‘O‚ÌconstIterator
+		 * @brief  å¾Œç½®ã‚¤ãƒ³ã‚¯ãƒªãƒ¡ãƒ³ãƒˆç”¨(it++)(ãƒªã‚¹ãƒˆã®æœ«å°¾ã«å‘ã‹ã£ã¦ä¸€ã¤é€²ã‚ã‚‹[operator++]())
+		 * @return æ¬¡ã«é€²ã‚€ä»¥å‰ã®constIterator
 		 */
 		constIterator  operator++(int) { constIterator it = *this; ++(*this); return it; }
 
 		/**
-		 * @brief  ŠÔÚQÆ(–ß‚è’l const scoreData&)iƒCƒeƒŒ[ƒ^‚Ìw‚·—v‘f‚ğæ“¾‚·‚é[operator* const”Å]())
+		 * @brief  é–“æ¥å‚ç…§(æˆ»ã‚Šå€¤ const scoreData&)ï¼ˆã‚¤ãƒ†ãƒ¬ãƒ¼ã‚¿ã®æŒ‡ã™è¦ç´ ã‚’å–å¾—ã™ã‚‹[operator* constç‰ˆ]())
 		 * @return const scoreData&
 		 */
 		const scoreData& operator*() const { 
-			//nullptr‚Å‚Í‚È‚¢ê‡‚ÆAƒ_ƒ~[ƒm[ƒh‚Å‚Í‚È‚¢ê‡‚Ì‚İ’Ê‚·
+			//nullptrã§ã¯ãªã„å ´åˆã¨ã€ãƒ€ãƒŸãƒ¼ãƒãƒ¼ãƒ‰ã§ã¯ãªã„å ´åˆã®ã¿é€šã™
 			assert(node != nullptr && !node->isDummy);
 			return node->data; 
 		}
 
 		/**
-		 * @brief   ƒRƒs[ƒRƒ“ƒXƒgƒ‰ƒNƒ^©“®¶¬(iterator‚ÌˆÊ’uƒ|ƒCƒ“ƒ^‚ğã‘‚«)(‘ã“ü‚ğs‚¤[operator=]())
-		 * @param   source ‘ã“üŒ³
+		 * @brief   ã‚³ãƒ”ãƒ¼ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿è‡ªå‹•ç”Ÿæˆ(iteratorã®ä½ç½®ãƒã‚¤ãƒ³ã‚¿ã‚’ä¸Šæ›¸ã)(ä»£å…¥ã‚’è¡Œã†[operator=]())
+		 * @param   source ä»£å…¥å…ƒ
 		 * @return  *this
 		 */
 		constIterator& operator=(const constIterator& source) = default;
 		
 		/**
-		 * @brief   “™’l”äŠr(==‚Å‚ ‚ê‚Îtrue‚ğ•Ô‚·)(’l‚ÆŠ—LÒ‚ª“¯ˆê‚©”äŠr‚·‚é[operator==]())
-		 * @param   comp ”äŠr‘Šè
-		 * @return  “™‚µ‚¢ê‡Atrue
+		 * @brief   ç­‰å€¤æ¯”è¼ƒ(==ã§ã‚ã‚Œã°trueã‚’è¿”ã™)(å€¤ã¨æ‰€æœ‰è€…ãŒåŒä¸€ã‹æ¯”è¼ƒã™ã‚‹[operator==]())
+		 * @param   comp æ¯”è¼ƒç›¸æ‰‹
+		 * @return  ç­‰ã—ã„å ´åˆã€true
 		 */
 		bool operator==(const constIterator& comp) const {
 			return host == comp.host && node == comp.node;
 		}
 
 		/**
-		 * @brief   ”ñ“™’l”äŠr(!=‚Å‚ ‚ê‚Îtrue‚ğ•Ô‚·)(ˆÙ‚È‚é‚©‚©”äŠr‚·‚é[operator!=]()
-		 * @param   comp ”äŠr‘Šè
-		 * @return  “™‚µ‚­‚È‚¢ê‡Atrue
+		 * @brief   éç­‰å€¤æ¯”è¼ƒ(!=ã§ã‚ã‚Œã°trueã‚’è¿”ã™)(ç•°ãªã‚‹ã‹ã‹æ¯”è¼ƒã™ã‚‹[operator!=]()
+		 * @param   comp æ¯”è¼ƒç›¸æ‰‹
+		 * @return  ç­‰ã—ããªã„å ´åˆã€true
 		 */
 		bool operator!=(const constIterator& comp) const {
 			return !(*this == comp);
@@ -147,38 +147,38 @@ public:
 	};
 
 	class iterator : public constIterator {
-		//doublyLinkedList‚©‚çƒAƒNƒZƒX‚·‚é‚½‚ß‚ÌéŒ¾
+		//doublyLinkedListã‹ã‚‰ã‚¢ã‚¯ã‚»ã‚¹ã™ã‚‹ãŸã‚ã®å®£è¨€
 		friend class doublyLinkedList;
 
-		//ƒRƒ“ƒXƒgƒ‰ƒNƒ^(init‚Ì’l‚Å‰Šú‰»)
+		//ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿(initã®å€¤ã§åˆæœŸåŒ–)
 		explicit iterator(Node* init, const doublyLinkedList* hostInit) : constIterator(init, hostInit) {}
 
 	public:
-		//‰Šú’l‚Ídefault‚Ìnullptr‚É‚¨”C‚¹
+		//åˆæœŸå€¤ã¯defaultã®nullptrã«ãŠä»»ã›
 		iterator() = default;
 
-		//scoreData‚ÉƒAƒNƒZƒX‚·‚é‚½‚ß‚ÌŠÔÚQÆ
+		//scoreDataã«ã‚¢ã‚¯ã‚»ã‚¹ã™ã‚‹ãŸã‚ã®é–“æ¥å‚ç…§
 		scoreData& operator*() {
 
-			//nullptr‚Å‚Í‚È‚¢ê‡‚ÆAƒ_ƒ~[ƒm[ƒh‚Å‚Í‚È‚¢ê‡‚Ì‚İ’Ê‚·
+			//nullptrã§ã¯ãªã„å ´åˆã¨ã€ãƒ€ãƒŸãƒ¼ãƒãƒ¼ãƒ‰ã§ã¯ãªã„å ´åˆã®ã¿é€šã™
 			assert(node != nullptr && !node->isDummy);
 			return node->data; 
 		}
 
-		//æ“ª‚Å‚à––”ö‚Å‚à‚È‚¢ƒCƒeƒŒ[ƒ^’¼Úw’è—p
+		//å…ˆé ­ã§ã‚‚æœ«å°¾ã§ã‚‚ãªã„ã‚¤ãƒ†ãƒ¬ãƒ¼ã‚¿ç›´æ¥æŒ‡å®šç”¨
 		/**
-		 * @brief  ‘O’uƒfƒNƒŠƒƒ“ƒg—p(--it)(ƒŠƒXƒg‚Ìæ“ª‚ÉŒü‚©‚Á‚Äˆê‚Âi‚ß‚é[operator--]())
+		 * @brief  å‰ç½®ãƒ‡ã‚¯ãƒªãƒ¡ãƒ³ãƒˆç”¨(--it)(ãƒªã‚¹ãƒˆã®å…ˆé ­ã«å‘ã‹ã£ã¦ä¸€ã¤é€²ã‚ã‚‹[operator--]())
 		 * @return *this
 		 */
 		iterator& operator--() {
-			//‚à‚µend()‚È‚Ç‚©‚ç––”ö(ƒ_ƒ~[ƒm[ƒh)‚ğw’è‚µ‚ÄƒfƒNƒŠƒƒ“ƒg‚µ‚½ê‡A
+			//ã‚‚ã—end()ãªã©ã‹ã‚‰æœ«å°¾(ãƒ€ãƒŸãƒ¼ãƒãƒ¼ãƒ‰)ã‚’æŒ‡å®šã—ã¦ãƒ‡ã‚¯ãƒªãƒ¡ãƒ³ãƒˆã—ãŸå ´åˆã€
 			if (node->isDummy) {
-				//‚à‚µƒ_ƒ~[‚ÌprevNode‚ª©g‚ğw‚µ‚Ä‚¢‚½ê‡AƒŠƒXƒg‚Í‹ó‚È‚Ì‚ÅAassert”­¶
+				//ã‚‚ã—ãƒ€ãƒŸãƒ¼ã®prevNodeãŒè‡ªèº«ã‚’æŒ‡ã—ã¦ã„ãŸå ´åˆã€ãƒªã‚¹ãƒˆã¯ç©ºãªã®ã§ã€assertç™ºç”Ÿ
 				assert(node->prevNode != node);
 			}
-			//ÀÛ‚É’†g‚ª‚ ‚éƒm[ƒh‚¾‚Á‚½ê‡
+			//å®Ÿéš›ã«ä¸­èº«ãŒã‚ã‚‹ãƒãƒ¼ãƒ‰ã ã£ãŸå ´åˆ
 			else {
-				//prevNode‚ªƒ_ƒ~[‚¾‚Á‚½ê‡Aæ“ª‚ğ’Ê‚è‰z‚µ‚Ä‚¢‚é‚Ì‚ÅAassert”­¶
+				//prevNodeãŒãƒ€ãƒŸãƒ¼ã ã£ãŸå ´åˆã€å…ˆé ­ã‚’é€šã‚Šè¶Šã—ã¦ã„ã‚‹ã®ã§ã€assertç™ºç”Ÿ
 				assert(!node->prevNode->isDummy);
 			}
 			node = node->prevNode; 
@@ -186,43 +186,43 @@ public:
 		}
 
 		/**
-		 * @brief  Œã’uƒfƒNƒŠƒƒ“ƒg—p(it--)(ƒŠƒXƒg‚Ìæ“ª‚ÉŒü‚©‚Á‚Äˆê‚Âi‚ß‚é[operator--]())
+		 * @brief  å¾Œç½®ãƒ‡ã‚¯ãƒªãƒ¡ãƒ³ãƒˆç”¨(it--)(ãƒªã‚¹ãƒˆã®å…ˆé ­ã«å‘ã‹ã£ã¦ä¸€ã¤é€²ã‚ã‚‹[operator--]())
 		 * @param  dummy(int)
-		 * @return ‘O‚É–ß‚éˆÈ‘O‚Ìiterator
+		 * @return å‰ã«æˆ»ã‚‹ä»¥å‰ã®iterator
 		 */
 		iterator  operator--(int) { iterator it = *this; --(*this); return it; }
 
 		/**
-		 * @brief  ‘O’uƒCƒ“ƒNƒŠƒƒ“ƒg—p(++it)(ƒŠƒXƒg‚Ì––”ö‚ÉŒü‚©‚Á‚Äˆê‚Âi‚ß‚é[operator++]())
+		 * @brief  å‰ç½®ã‚¤ãƒ³ã‚¯ãƒªãƒ¡ãƒ³ãƒˆç”¨(++it)(ãƒªã‚¹ãƒˆã®æœ«å°¾ã«å‘ã‹ã£ã¦ä¸€ã¤é€²ã‚ã‚‹[operator++]())
 		 * @return *this
 		 */
 		iterator& operator++() {
-			//nullptr‚Å‚Í‚È‚¢ê‡‚ÆAƒ_ƒ~[ƒm[ƒh‚Å‚Í‚È‚¢ê‡‚Ì‚İ’Ê‚·
+			//nullptrã§ã¯ãªã„å ´åˆã¨ã€ãƒ€ãƒŸãƒ¼ãƒãƒ¼ãƒ‰ã§ã¯ãªã„å ´åˆã®ã¿é€šã™
 			assert(node != nullptr && !node->isDummy);
 			node = node->nextNode; 
 			return *this; 
 		}
 
 		/**
-		 * @brief  Œã’uƒCƒ“ƒNƒŠƒƒ“ƒg—p(it++)(ƒŠƒXƒg‚Ì––”ö‚ÉŒü‚©‚Á‚Äˆê‚Âi‚ß‚é[operator++]())
+		 * @brief  å¾Œç½®ã‚¤ãƒ³ã‚¯ãƒªãƒ¡ãƒ³ãƒˆç”¨(it++)(ãƒªã‚¹ãƒˆã®æœ«å°¾ã«å‘ã‹ã£ã¦ä¸€ã¤é€²ã‚ã‚‹[operator++]())
 		 * @param  dummy(int)
-		 * @return Ÿ‚Éi‚ŞˆÈ‘O‚Ìiterator
+		 * @return æ¬¡ã«é€²ã‚€ä»¥å‰ã®iterator
 		 */
 		iterator  operator++(int) { iterator it = *this; ++(*this); return it; }
 
 		/**
-		 * @brief   “™’l”äŠr(==‚Å‚ ‚ê‚Îtrue‚ğ•Ô‚·)(“¯ˆê‚©”äŠr‚·‚é[operator==]())
-		 * @param   comp ”äŠr‘Šè
-		 * @return  “™‚µ‚¢ê‡Atrue
+		 * @brief   ç­‰å€¤æ¯”è¼ƒ(==ã§ã‚ã‚Œã°trueã‚’è¿”ã™)(åŒä¸€ã‹æ¯”è¼ƒã™ã‚‹[operator==]())
+		 * @param   comp æ¯”è¼ƒç›¸æ‰‹
+		 * @return  ç­‰ã—ã„å ´åˆã€true
 		 */
 		bool operator==(const iterator& comp) const {
 			return host == comp.host && node == comp.node;
 		}
 
 		/**
-		 * @brief   ”ñ“™’l”äŠr(!=‚Å‚ ‚ê‚Îtrue‚ğ•Ô‚·)(ˆÙ‚È‚é‚©‚©”äŠr‚·‚é[operator!=]()
-		 * @param   comp ”äŠr‘Šè
-		 * @return  “™‚µ‚­‚È‚¢ê‡Atrue
+		 * @brief   éç­‰å€¤æ¯”è¼ƒ(!=ã§ã‚ã‚Œã°trueã‚’è¿”ã™)(ç•°ãªã‚‹ã‹ã‹æ¯”è¼ƒã™ã‚‹[operator!=]()
+		 * @param   comp æ¯”è¼ƒç›¸æ‰‹
+		 * @return  ç­‰ã—ããªã„å ´åˆã€true
 		 */
 		bool operator!=(const iterator& comp) const {
 			return !(*this == comp);
@@ -231,74 +231,74 @@ public:
 
 
 public:
-	//ƒf[ƒ^”‚Ìæ“¾
+	//ãƒ‡ãƒ¼ã‚¿æ•°ã®å–å¾—
 	size_t size() const { return listSize; }
 
-	//æ“ª/––”öƒCƒeƒŒ[ƒ^‚Ìæ“¾
+	//å…ˆé ­/æœ«å°¾ã‚¤ãƒ†ãƒ¬ãƒ¼ã‚¿ã®å–å¾—
 	/**
-	* @brief   æ“ªƒCƒeƒŒ[ƒ^‚Ìæ“¾
-	* @return  zŠÂƒŠƒXƒg‚Ìˆ×Aí‚Éƒ_ƒ~[‚ÌŸ‚ğ“n‚·
+	* @brief   å…ˆé ­ã‚¤ãƒ†ãƒ¬ãƒ¼ã‚¿ã®å–å¾—
+	* @return  å¾ªç’°ãƒªã‚¹ãƒˆã®ç‚ºã€å¸¸ã«ãƒ€ãƒŸãƒ¼ã®æ¬¡ã‚’æ¸¡ã™
 	*/
 	iterator begin() {
 		return iterator(dummy->nextNode, this);
 	}
 
 	/**
-	* @brief   æ“ªƒRƒ“ƒXƒgƒCƒeƒŒ[ƒ^‚Ìæ“¾
-	* @return  zŠÂƒŠƒXƒg‚Ìˆ×Aí‚Éƒ_ƒ~[‚ÌŸ‚ğ“n‚·
+	* @brief   å…ˆé ­ã‚³ãƒ³ã‚¹ãƒˆã‚¤ãƒ†ãƒ¬ãƒ¼ã‚¿ã®å–å¾—
+	* @return  å¾ªç’°ãƒªã‚¹ãƒˆã®ç‚ºã€å¸¸ã«ãƒ€ãƒŸãƒ¼ã®æ¬¡ã‚’æ¸¡ã™
 	*/
 	constIterator cbegin() const {
 		return constIterator(dummy->nextNode, this);
 	}
 
 	/**
-	* @brief   ––”öƒCƒeƒŒ[ƒ^‚Ìæ“¾
-	* @return  zŠÂƒŠƒXƒg‚Ìˆ×Aí‚Éƒ_ƒ~[‚ğ“n‚·
+	* @brief   æœ«å°¾ã‚¤ãƒ†ãƒ¬ãƒ¼ã‚¿ã®å–å¾—
+	* @return  å¾ªç’°ãƒªã‚¹ãƒˆã®ç‚ºã€å¸¸ã«ãƒ€ãƒŸãƒ¼ã‚’æ¸¡ã™
 	*/
 	iterator end() {
 		return iterator(dummy, this);
 	}
 
 	/**
-	* @brief   ––”öƒRƒ“ƒXƒgƒCƒeƒŒ[ƒ^‚Ìæ“¾
-	* @return  zŠÂƒŠƒXƒg‚Ìˆ×Aí‚Éƒ_ƒ~[‚ğ“n‚·
+	* @brief   æœ«å°¾ã‚³ãƒ³ã‚¹ãƒˆã‚¤ãƒ†ãƒ¬ãƒ¼ã‚¿ã®å–å¾—
+	* @return  å¾ªç’°ãƒªã‚¹ãƒˆã®ç‚ºã€å¸¸ã«ãƒ€ãƒŸãƒ¼ã‚’æ¸¡ã™
 	*/
 	constIterator cend() const {
 		return constIterator(dummy, this);
 	}
 
 	/**
-	 * @brief          ƒm[ƒh’Ç‰Á
-	 * @param nodePos  ‘}“üæ‚Ìƒm[ƒh‚ÌˆÊ’u
-	 * @param datas    ’Ç‰Á‚·‚éƒf[ƒ^string
-	 * @return         ’Ç‰Á‚µ‚½ƒm[ƒh‚ÌˆÊ’u
+	 * @brief          ãƒãƒ¼ãƒ‰è¿½åŠ 
+	 * @param nodePos  æŒ¿å…¥å…ˆã®ãƒãƒ¼ãƒ‰ã®ä½ç½®
+	 * @param datas    è¿½åŠ ã™ã‚‹ãƒ‡ãƒ¼ã‚¿string
+	 * @return         è¿½åŠ ã—ãŸãƒãƒ¼ãƒ‰ã®ä½ç½®
 	 */
 	iterator addNode(const constIterator& nodePos, const scoreData& datas) {
 		Node* next = {};
 
-		//nodePos‚ª‹ó‚Å‚È‚¢ê‡
+		//nodePosãŒç©ºã§ãªã„å ´åˆ
 		if (nodePos.node != nullptr) {
-			//‘}“üæ‚ğ‘ã“ü
+			//æŒ¿å…¥å…ˆã‚’ä»£å…¥
 			next = nodePos.node;
 		}
-		//‚»‚êˆÈŠO‚Ìê‡‚Íƒ_ƒ~[‚ğ‘ã“ü
+		//ãã‚Œä»¥å¤–ã®å ´åˆã¯ãƒ€ãƒŸãƒ¼ã‚’ä»£å…¥
 		else {
 			next = dummy;
 		}
 
-		//V‹Kƒm[ƒh‚ğ¶¬‚µAÚ‘±‚ğÄ•Ò¬
+		//æ–°è¦ãƒãƒ¼ãƒ‰ã‚’ç”Ÿæˆã—ã€æ¥ç¶šã‚’å†ç·¨æˆ
 		Node* current = new Node();
 		current->prevNode = next->prevNode;
 		current->nextNode = next;
 		next->prevNode->nextNode = current;
 		next->prevNode = current;
 
-		//ƒf[ƒ^‚ğ‘ã“ü‚µAƒ_ƒ~[‚Å‚Í‚È‚¢‚Æ”»•Ê‚·‚é
+		//ãƒ‡ãƒ¼ã‚¿ã‚’ä»£å…¥ã—ã€ãƒ€ãƒŸãƒ¼ã§ã¯ãªã„ã¨åˆ¤åˆ¥ã™ã‚‹
 		current->data = datas;
 		current->isDummy = false;
 
 
-		//ƒŠƒXƒgƒTƒCƒY‚ğŠÇ—‚·‚é•Ï”‚ğ+1
+		//ãƒªã‚¹ãƒˆã‚µã‚¤ã‚ºã‚’ç®¡ç†ã™ã‚‹å¤‰æ•°ã‚’+1
 		++listSize;
 
 		return iterator(current, this);
@@ -306,34 +306,34 @@ public:
 
 
 	/**
-	 * @brief          ƒm[ƒhíœ
-	 * @param nodePos  íœ‚·‚éƒm[ƒh‚ÌˆÊ’u
-	 * @return         Ÿ‚Ìƒm[ƒh‚ÌˆÊ’u
+	 * @brief          ãƒãƒ¼ãƒ‰å‰Šé™¤
+	 * @param nodePos  å‰Šé™¤ã™ã‚‹ãƒãƒ¼ãƒ‰ã®ä½ç½®
+	 * @return         æ¬¡ã®ãƒãƒ¼ãƒ‰ã®ä½ç½®
 	 */
 	iterator deleteNode(const iterator& nodePos) {
 		Node* current = nodePos.node;
 
-		//Œ©‚Â‚©‚ç‚È‚©‚Á‚½ê‡‚à‚µ‚­‚Íƒ_ƒ~[‚¾‚Á‚½ê‡‚ÍAíœ•s‰Â‚È‚Ì‚Åƒ_ƒ~[‚ğreturn
+		//è¦‹ã¤ã‹ã‚‰ãªã‹ã£ãŸå ´åˆã‚‚ã—ãã¯ãƒ€ãƒŸãƒ¼ã ã£ãŸå ´åˆã¯ã€å‰Šé™¤ä¸å¯ãªã®ã§ãƒ€ãƒŸãƒ¼ã‚’return
 		if (current == nullptr || current == dummy) return iterator(dummy,this);
 
 		Node* next = current->nextNode;
 		Node* prev = current->prevNode;
-		//ƒm[ƒh‚Ì‘OŒã‚Ìƒ|ƒCƒ“ƒ^‚ğÄ•Ò¬
+		//ãƒãƒ¼ãƒ‰ã®å‰å¾Œã®ãƒã‚¤ãƒ³ã‚¿ã‚’å†ç·¨æˆ
 		prev->nextNode = next;
 		next->prevNode = prev;
 
-		//current‚ğíœ‚µAƒŠƒXƒgƒTƒCƒY‚àŒ¸‚ç‚·
+		//currentã‚’å‰Šé™¤ã—ã€ãƒªã‚¹ãƒˆã‚µã‚¤ã‚ºã‚‚æ¸›ã‚‰ã™
 		delete current;
 		--listSize;
 		return iterator(next, this);
 	}
 
 	/**
-	 * @brief ƒŠƒXƒg“à‚Ì—v‘fæ“ª‚©‚ç‘SÁ‹
+	 * @brief ãƒªã‚¹ãƒˆå†…ã®è¦ç´ å…ˆé ­ã‹ã‚‰å…¨æ¶ˆå»
 	 */
 	void clear() {
 		Node* current = dummy->nextNode;
-		//current‚ªdummy‚É‚È‚é‚Ü‚Åƒ‹[ƒv‚µAƒm[ƒh‚ğíœ
+		//currentãŒdummyã«ãªã‚‹ã¾ã§ãƒ«ãƒ¼ãƒ—ã—ã€ãƒãƒ¼ãƒ‰ã‚’å‰Šé™¤
 		while (current != dummy) {
 			Node* next = current->nextNode;
 			delete current;
@@ -345,20 +345,20 @@ public:
 	}
 
 	/**
-	 * @brief ƒfƒtƒHƒ‹ƒgƒRƒ“ƒXƒgƒ‰ƒNƒ^B
+	 * @brief ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿ã§ãƒ€ãƒŸãƒ¼ãƒãƒ¼ãƒ‰ã®åˆæœŸè¨­å®š
 	 */
 	doublyLinkedList() {
-		//ƒ_ƒ~[ƒm[ƒhì¬
+		//ãƒ€ãƒŸãƒ¼ãƒãƒ¼ãƒ‰ä½œæˆ
 		dummy = new Node();
-		dummy->isDummy = true; //ƒ_ƒ~[ƒm[ƒh‚Å‚ ‚é‚Æ”»•Ê
+		dummy->isDummy = true; //ãƒ€ãƒŸãƒ¼ãƒãƒ¼ãƒ‰ã§ã‚ã‚‹ã¨åˆ¤åˆ¥
 
-		//zŠÂƒŠƒXƒg‚É‚·‚é
+		//å¾ªç’°ãƒªã‚¹ãƒˆã«ã™ã‚‹
 		dummy->nextNode = dummy;
 		dummy->prevNode = dummy;
 	}
 
 	/**
-	 * @brief ƒfƒXƒgƒ‰ƒNƒ^‚ÅƒŠƒXƒg‚Ì“à—e•¨‘SÁ‹
+	 * @brief ãƒ‡ã‚¹ãƒˆãƒ©ã‚¯ã‚¿ã§ãƒªã‚¹ãƒˆã®å†…å®¹ç‰©å…¨æ¶ˆå»
 	 */
 	~doublyLinkedList() {
 		clear(); 
@@ -367,23 +367,23 @@ public:
 	}
 
 	/**
-	 * @brief ƒRƒs[ƒRƒ“ƒXƒgƒ‰ƒNƒ^‚ğíœB
+	 * @brief ã‚³ãƒ”ãƒ¼ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿ã‚’å‰Šé™¤ã€‚
 	 */
 	doublyLinkedList(const doublyLinkedList&) = delete;
 
 	/**
-	 * @brief ƒRƒs[‘ã“ü‰‰Zq‚ğíœB
+	 * @brief ã‚³ãƒ”ãƒ¼ä»£å…¥æ¼”ç®—å­ã‚’å‰Šé™¤ã€‚
 	 */
 	doublyLinkedList& operator=(const doublyLinkedList&) = delete;
 
 	/**
-	 * @brief  ˆÊ’unodePos‚Ì’¼‘O‚É‘}“ü(iterator)
-	 * @param  nodePos ƒm[ƒhˆÊ’u
-	 * @param  data    “ü—Íƒf[ƒ^
-	 * @return ¬Œ÷‚Å‚ ‚ê‚ÎtrueA•s³ƒCƒeƒŒ[ƒ^“™‚Ìê‡‚Ífalse‚ğ•Ô‚·
+	 * @brief  ä½ç½®nodePosã®ç›´å‰ã«æŒ¿å…¥(iterator)
+	 * @param  nodePos ãƒãƒ¼ãƒ‰ä½ç½®
+	 * @param  data    å…¥åŠ›ãƒ‡ãƒ¼ã‚¿
+	 * @return æˆåŠŸã§ã‚ã‚Œã°trueã€ä¸æ­£ã‚¤ãƒ†ãƒ¬ãƒ¼ã‚¿ç­‰ã®å ´åˆã¯falseã‚’è¿”ã™
 	 */
 	bool insertData(const iterator& nodePos, const scoreData& data) {
-		//ƒCƒeƒŒ[ƒ^‚ÌŠ—LÒ‚ª©•ª‚Å‚È‚¢ê‡Afalse‚ğ•Ô‚·
+		//ã‚¤ãƒ†ãƒ¬ãƒ¼ã‚¿ã®æ‰€æœ‰è€…ãŒè‡ªåˆ†ã§ãªã„å ´åˆã€falseã‚’è¿”ã™
 		if (nodePos.host != this) {
 			return false;
 		}
@@ -396,13 +396,13 @@ public:
 	}
 
 	/**
-	 * @brief  ˆÊ’unodePos‚Ì’¼‘O‚É‘}“ü(constIterator)
-	 * @param  nodePos ƒm[ƒhˆÊ’u
-	 * @param   data   “ü—Íƒf[ƒ^
-	 * @return ¬Œ÷‚Å‚ ‚ê‚ÎtrueA•s³ƒCƒeƒŒ[ƒ^“™‚Ìê‡‚Ífalse‚ğ•Ô‚·
+	 * @brief  ä½ç½®nodePosã®ç›´å‰ã«æŒ¿å…¥(constIterator)
+	 * @param  nodePos ãƒãƒ¼ãƒ‰ä½ç½®
+	 * @param   data   å…¥åŠ›ãƒ‡ãƒ¼ã‚¿
+	 * @return æˆåŠŸã§ã‚ã‚Œã°trueã€ä¸æ­£ã‚¤ãƒ†ãƒ¬ãƒ¼ã‚¿ç­‰ã®å ´åˆã¯falseã‚’è¿”ã™
 	 */
 	bool insertData(const constIterator& nodePos, const scoreData& data) {
-		//ƒCƒeƒŒ[ƒ^‚ÌŠ—LÒ‚ª©•ª‚Å‚È‚¢ê‡Afalse‚ğ•Ô‚·
+		//ã‚¤ãƒ†ãƒ¬ãƒ¼ã‚¿ã®æ‰€æœ‰è€…ãŒè‡ªåˆ†ã§ãªã„å ´åˆã€falseã‚’è¿”ã™
 		if (nodePos.host != this) {
 			return false;
 		}
@@ -415,9 +415,9 @@ public:
 	}
 
 	/**
-	 * @brief  ˆÊ’unodePos‚É‚ ‚é—v‘f‚ğíœ(iterator)
-	 * @param  nodePos ƒm[ƒhˆÊ’u
-	 * @return ¬Œ÷‚Å‚ ‚ê‚ÎtrueA‚»‚µ‚Ä‹óAhost•sˆê’vAnodePos==end‚à‚µ‚­‚Í•s³‚Å‚ ‚ê‚Îfalse‚ğ•Ô‚·
+	 * @brief  ä½ç½®nodePosã«ã‚ã‚‹è¦ç´ ã‚’å‰Šé™¤(iterator)
+	 * @param  nodePos ãƒãƒ¼ãƒ‰ä½ç½®
+	 * @return æˆåŠŸã§ã‚ã‚Œã°trueã€ãã—ã¦ç©ºã€hostä¸ä¸€è‡´ã€nodePos==endã‚‚ã—ãã¯ä¸æ­£ã§ã‚ã‚Œã°falseã‚’è¿”ã™
 	 */
 	bool deleteData(const iterator& nodePos) {
 		if (listSize == 0)               return false;
@@ -430,9 +430,9 @@ public:
 	}
 
 	/**
-	 * @brief  ˆÊ’unodePos‚É‚ ‚é—v‘f‚ğíœ(constIterator)
-	 * @param  nodePos ƒm[ƒhˆÊ’u
-	 * @return ¬Œ÷‚Å‚ ‚ê‚ÎtrueA¸”s‚Ìê‡‚Ífalse‚ğ•Ô‚·
+	 * @brief  ä½ç½®nodePosã«ã‚ã‚‹è¦ç´ ã‚’å‰Šé™¤(constIterator)
+	 * @param  nodePos ãƒãƒ¼ãƒ‰ä½ç½®
+	 * @return æˆåŠŸã§ã‚ã‚Œã°trueã€å¤±æ•—ã®å ´åˆã¯falseã‚’è¿”ã™
 	 */
 	bool deleteData(const constIterator& nodePos) {
 		if (listSize == 0)               return false;
